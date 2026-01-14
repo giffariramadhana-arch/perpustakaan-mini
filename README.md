@@ -26,7 +26,7 @@ Aplikasi sederhana untuk manajemen buku dan peminjaman.
 ## Instalasi
 1. Clone repository:
 ```bash
-git clone <repo-url>
+git clone https://github.com/giffariramadhana-arch/perpustakaan-mini.git
 cd perpustakaan-mini
 ```
 2. Install dependencies:
