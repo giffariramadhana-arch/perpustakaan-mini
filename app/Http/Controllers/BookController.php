@@ -7,43 +7,77 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    // tampilkan semua buku
+    // Menampilkan semua buku
     public function index()
     {
         $books = Book::all();
         return view('books.index', compact('books'));
     }
 
-    // form tambah buku
+    // Menampilkan form tambah buku
     public function create()
     {
         return view('books.create');
     }
 
-    // simpan buku
-    public function store(Request $request)
-    {
-        Book::create($request->all());
-        return redirect()->route('books.index');
-    }
+    // Menyimpan buku baru ke database
+   public function store(Request $request)
+{
+    $request->validate([
+        'title' => 'required',
+        'author' => 'required',
+        'year' => 'required',
+        'stock' => 'required|integer',
+        'category' => 'required'
+    ]);
 
-    // form edit
+    Book::create([
+        'title' => $request->title,
+        'author' => $request->author,
+        'year' => $request->year,
+        'stock' => $request->stock,
+        'category' => $request->category,
+    ]);
+
+    return redirect()->route('books.index')
+        ->with('success', 'Buku berhasil ditambahkan');
+}
+
+    // Menampilkan form edit buku
     public function edit(Book $book)
     {
         return view('books.edit', compact('book'));
     }
 
-    // update buku
+    // Memperbarui data buku
     public function update(Request $request, Book $book)
     {
-        $book->update($request->all());
-        return redirect()->route('books.index');
+        $request->validate([
+            'title'     => 'required|string|max:255',
+            'author'    => 'required|string|max:255',
+            'publisher' => 'required|string|max:255',
+            'year'      => 'required|integer',
+            'stock'     => 'required|integer|min:0',
+        ]);
+
+        $book->update($request->only([
+            'title',
+            'author',
+            'publisher',
+            'year',
+            'stock'
+        ]));
+
+        return redirect()->route('books.index')
+                         ->with('success', 'Buku berhasil diperbarui');
     }
 
-    // hapus buku
+    // Menghapus buku
     public function destroy(Book $book)
     {
         $book->delete();
-        return redirect()->route('books.index');
+
+        return redirect()->route('books.index')
+                         ->with('success', 'Buku berhasil dihapus');
     }
 }
